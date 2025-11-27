@@ -124,10 +124,10 @@ public class BMIService
         return weightSuggestion;
     }
 
-    public static void ValidateGoal(decimal bodyWeight, WeightSuggestion goalType, decimal goalWeight, int weeks)
+    public static bool ValidateGoal(decimal bodyWeight, WeightSuggestion goalType, decimal goalWeight, int weeks)
     {
         // Step 1: Calculate weight change
-        decimal weightChange = Math.Abs(goalWeight -bodyWeight);
+        decimal weightChange = Math.Abs(goalWeight - bodyWeight);
 
         // Step 2: Calculate weekly rate
         decimal weeklyRate = weightChange / weeks;
@@ -149,7 +149,7 @@ public class BMIService
         if (isSafe)
         {
             Console.WriteLine("Your goal is healthy and reasonable.");
-            Console.WriteLine("Now navigate menu 7 to establish a plan");
+            Console.WriteLine("Now let's take a look of your Goal summary.");
         }
 
         // Step 5: Validate goal weight is reasonable
@@ -163,6 +163,22 @@ public class BMIService
             Console.WriteLine();
             Console.WriteLine($"⚠️  Warning: For weight gain, your goal ({goalWeight} lbs) should be greater than your current weight ({bodyWeight} lbs).");
         }
+        return isSafe;
+    }
+
+    public static decimal CalculateCaloriesDeficit(decimal tdee, WeightSuggestion goalType, decimal goalWeight, decimal bodyWeight, int weeks)
+    {
+        decimal weightChange = Math.Abs(bodyWeight - goalWeight);
+        decimal weeklyWeightChange = Math.Round(weightChange / weeks, 2);
+        decimal dailyCaloriesAdjustment = weeklyWeightChange * 3500 / 7;
+
+        decimal targetDailyCalories = goalType switch
+        {
+            WeightSuggestion.IncreaseWeight => tdee + dailyCaloriesAdjustment,
+            WeightSuggestion.DecreaseWeight => tdee - dailyCaloriesAdjustment,
+            _ => tdee
+        };     
+        return Math.Round(targetDailyCalories, 0);
     }
 }
         

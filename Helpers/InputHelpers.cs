@@ -280,5 +280,23 @@ public static class InputHelpers
             Console.WriteLine("Invalid input. Please try again.");
         }
     }
+
+    public static int ReenterOrExit()
+    {
+        while (true)
+        {
+            Console.WriteLine();
+            Console.WriteLine("  1 - Re-enter the input");
+            Console.WriteLine("  0 - Accept and continue");
+            Console.Write("Your choice: ");
+
+            if (int.TryParse(Console.ReadLine(), out int choice) && (choice == 0 || choice == 1))
+            {
+                return choice;
+            }
+
+            Console.WriteLine("Invalid input. Please enter 0 or 1.");
+        }
+    }
 }
 

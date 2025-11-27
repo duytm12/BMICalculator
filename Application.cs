@@ -10,6 +10,7 @@ public class Application
 {
     private UserProfile userProfile = new();
     private BMIResult? bmiResult = null; // Nullable - null means BMI hasn't been calculated yet
+    private TDEEResult tdeeResult = new();
     public void Run()
     {
         Console.WriteLine("\nWelcome to the BMI Calculator");
@@ -104,6 +105,7 @@ public class Application
 
     private void EnsureActivityLevel()
     {
+        OH.PrintActivityChart();
         if (userProfile.ActivityLevel == null)
         {
             userProfile.ActivityLevel = IH.GetActivityLevel();
@@ -114,11 +116,29 @@ public class Application
         }
     }
 
+    private void EnsureTDEE()
+    {
+        if (tdeeResult.TDEE == 0)
+        {
+            // Ensure all required data for TDEE calculation
+            EnsureHeight();
+            EnsureWeight();
+            EnsureGender();
+            EnsureAge();
+            
+            tdeeResult = BMIService.CalculateTDEE(userProfile);
+        }
+        else
+        {
+            Console.WriteLine($"Using stored TDEE: {tdeeResult.TDEE}");
+        }
+    }
+
     private void HandleBMICalculation()
     {
-        Console.WriteLine("\nBMI - Body Mass Index is: ");
-        Console.WriteLine("1/ A measure of body fat based on height and weight");
-        Console.WriteLine("2/ It does not measure body composition\n");
+        Console.WriteLine("\n📊 BMI - Body Mass Index is: ");
+        Console.WriteLine("1️⃣  A measure of body fat based on height and weight");
+        Console.WriteLine("2️⃣  It does not measure body composition\n");
 
         // Ensure required data is collected
         EnsureHeight();
@@ -126,19 +146,19 @@ public class Application
 
         // Display what you're using
         Console.WriteLine($"\nUsing Height: {userProfile.Height} inches and Weight: {userProfile.Weight} lbs to calculate your BMI");
-        
+
         // Calculate BMI
         bmiResult = BMIService.CalculateBMI(userProfile);
 
         // Display results
-        OH.PrintBMIResult(bmiResult);    
+        OH.PrintBMIResult(bmiResult);
     }
     
     private void HandleBMRCalculation()
     {
-        Console.WriteLine("\nBMR - Basal Metabolic Rate is: ");
-        Console.WriteLine("1/ The number of calories your body burns at rest (doing nothing)");
-        Console.WriteLine("2/ The minimum calories needed to stay alive\n");
+        Console.WriteLine("\n🔥 BMR - Basal Metabolic Rate is: ");
+        Console.WriteLine("1️⃣  The number of calories your body burns at rest (doing nothing)");
+        Console.WriteLine("2️⃣  The minimum calories needed to stay alive\n");
         
         // Ensure required data is collected
         EnsureHeight();
@@ -158,12 +178,9 @@ public class Application
     }
     private void HandleTDEECalculation()
     {
-        Console.WriteLine("\nTDEE - Total Daily Energy Expenditure: ");
-        Console.WriteLine("1/ The number of calories your body burns in a day. Including all activities and bodily functions such as breathing, moving, excercising, digesting food, and even fidgeting.");
-        Console.WriteLine("2/ A person with higher activity level needs more energy to stay active and functions well, and vice versa.");
-
-        // Print Activity Chart before getting input
-        OH.PrintActivityChart();
+        Console.WriteLine("\n⚡ TDEE - Total Daily Energy Expenditure: ");
+        Console.WriteLine("1️⃣ The number of calories your body burns in a day. Including all activities and bodily functions such as breathing, moving, excercising, digesting food, and even fidgeting.");
+        Console.WriteLine("2️⃣ A person with higher activity level needs more energy to stay active and functions well, and vice versa.");
 
         // Ensure required data is collected
         EnsureActivityLevel();
@@ -208,25 +225,34 @@ public class Application
             return;
         }
 
-        // Step 4: Get goal weight (with validation)
-        Console.WriteLine("Enter your targeted weight you want to achieve: ");
-        decimal goalWeight = IH.GetWeight();
+        // Steps 4-6: Loop until user is satisfied with their goal
+        decimal goalWeight;
+        int weeks;
+        bool isSafe;
+        int userChoice;
 
-        // Step 5: Get timeline (with validation)
-        Console.WriteLine();
-        int weeks = IH.GetWeeks();
-        BMIService.ValidateGoal(userProfile.Weight, goalType, goalWeight, weeks);
+        do
+        {
+            // Step 4: Get goal weight
+            Console.WriteLine("\nEnter your targeted weight you want to achieve: ");
+            goalWeight = IH.GetWeight();
 
-        // Step 6: Display goal summary
-        // Calculate summary values:
-        //   - Current weight: userProfile.Weight
-        //   - Goal weight: goalWeight
-        //   - Weight change needed: Math.Abs(goalWeight - userProfile.Weight)
-        //   - Timeline: weeks
-        //   - Weekly rate: weightChange / weeks
-        //   - Validation status: (from ValidateGoal - safe/unsafe)
-        // Display formatted summary using OutputHelpers (create PrintGoalSummary method)
-        // Show: Current → Goal, Change needed, Timeline, Weekly rate, Status
+            // Step 5: Get timeline
+            Console.WriteLine();
+            weeks = IH.GetWeeks();
+
+            // Validate the goal
+            Console.WriteLine();
+            isSafe = BMIService.ValidateGoal(userProfile.Weight, goalType, goalWeight, weeks);
+
+            // Step 6: Display goal summary
+            OH.PrintGoalSummary(userProfile, goalWeight, weeks, isSafe);
+
+            // Ask if user wants to adjust their goal
+            userChoice = IH.ReenterOrExit();
+
+        } while (userChoice == 1);
+
 
         // Step 7: Calculate and recommend a plan to achieve goal
         // Calculate calorie requirements:
@@ -234,12 +260,15 @@ public class Application
         //   - Calculate daily calorie deficit/surplus needed based on weekly rate
         //     (1 lb = 3,500 calories, so weekly deficit/surplus = weeklyRate * 3500 / 7 days)
         //   - Calculate target daily calories: TDEE ± daily deficit/surplus
-        // Display recommendations based on goalType:
-        //   - For DecreaseWeight: Show calorie deficit, suggest increase activity or reduce intake
-        //   - For IncreaseWeight: Show calorie surplus, suggest increase intake
-        //   - Show activity level recommendations
-        //   - Show time to reach goal (if applicable)
-        // Use OutputHelpers to display plan (create PrintGoalPlan method)
+        EnsureActivityLevel();
+        EnsureTDEE();
+        Console.WriteLine("\n🧮   Calculating calories deficit and recommend a personalized goal plan .... ");
+        Console.ReadKey();
+
+        decimal targetDailyCalories = BMIService.CalculateCaloriesDeficit(tdeeResult.TDEE, goalType, goalWeight, userProfile.Weight, weeks);
+        
+        // Display the personalized goal plan
+        OH.PrintGoalPlan(goalType, targetDailyCalories, tdeeResult.TDEE, weeks, goalWeight);
 
         // Step 8: Store goal (optional)
         // Create a Goal model to store:
