@@ -239,7 +239,7 @@ public static class InputHelpers
                 WeightSuggestion.DecreaseWeight => "Decrease your body weight",
                 _ => ""
             };
-            Console.WriteLine($"💡 Suggested: {suggestionText} (based on your BMI)");
+            Console.WriteLine($"Suggested: {suggestionText} (based on your BMI)");
             Console.WriteLine();
             
             Console.WriteLine("0 - Maintain your body weight");
@@ -268,7 +268,7 @@ public static class InputHelpers
                 if (userChoice != weightSuggestion)
                 {
                     Console.WriteLine();
-                    Console.WriteLine("⚠️  Warning: Your choice differs from the BMI-based suggestion.");
+                    Console.WriteLine("[WARNING] Your choice differs from the BMI-based suggestion.");
                     Console.WriteLine("   Please consult with a healthcare professional if you're unsure.");
                     Console.WriteLine("   Press any key to continue with your choice...");
                     Console.ReadKey();

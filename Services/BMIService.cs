@@ -156,12 +156,12 @@ public class BMIService
         if (goalType == WeightSuggestion.DecreaseWeight && goalWeight >= bodyWeight)
         {
             Console.WriteLine();
-            Console.WriteLine($"⚠️  Warning: For weight loss, your goal ({goalWeight} lbs) should be less than your current weight ({bodyWeight} lbs).");
+            Console.WriteLine($"[WARNING] For weight loss, your goal ({goalWeight} lbs) should be less than your current weight ({bodyWeight} lbs).");
         }
         else if (goalType == WeightSuggestion.IncreaseWeight && goalWeight <= bodyWeight)
         {
             Console.WriteLine();
-            Console.WriteLine($"⚠️  Warning: For weight gain, your goal ({goalWeight} lbs) should be greater than your current weight ({bodyWeight} lbs).");
+            Console.WriteLine($"[WARNING] For weight gain, your goal ({goalWeight} lbs) should be greater than your current weight ({bodyWeight} lbs).");
         }
         return isSafe;
     }

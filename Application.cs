@@ -136,9 +136,9 @@ public class Application
 
     private void HandleBMICalculation()
     {
-        Console.WriteLine("\n📊 BMI - Body Mass Index is: ");
-        Console.WriteLine("1️⃣  A measure of body fat based on height and weight");
-        Console.WriteLine("2️⃣  It does not measure body composition\n");
+        Console.WriteLine("\nBMI - Body Mass Index is: ");
+        Console.WriteLine("1.  A measure of body fat based on height and weight");
+        Console.WriteLine("2.  It does not measure body composition\n");
 
         // Ensure required data is collected
         EnsureHeight();
@@ -156,9 +156,9 @@ public class Application
     
     private void HandleBMRCalculation()
     {
-        Console.WriteLine("\n🔥 BMR - Basal Metabolic Rate is: ");
-        Console.WriteLine("1️⃣  The number of calories your body burns at rest (doing nothing)");
-        Console.WriteLine("2️⃣  The minimum calories needed to stay alive\n");
+        Console.WriteLine("\nBMR - Basal Metabolic Rate is: ");
+        Console.WriteLine("1.  The number of calories your body burns at rest (doing nothing)");
+        Console.WriteLine("2.  The minimum calories needed to stay alive\n");
         
         // Ensure required data is collected
         EnsureHeight();
@@ -178,9 +178,9 @@ public class Application
     }
     private void HandleTDEECalculation()
     {
-        Console.WriteLine("\n⚡ TDEE - Total Daily Energy Expenditure: ");
-        Console.WriteLine("1️⃣ The number of calories your body burns in a day. Including all activities and bodily functions such as breathing, moving, excercising, digesting food, and even fidgeting.");
-        Console.WriteLine("2️⃣ A person with higher activity level needs more energy to stay active and functions well, and vice versa.");
+        Console.WriteLine("\nTDEE - Total Daily Energy Expenditure: ");
+        Console.WriteLine("1. The number of calories your body burns in a day. Including all activities and bodily functions such as breathing, moving, excercising, digesting food, and even fidgeting.");
+        Console.WriteLine("2. A person with higher activity level needs more energy to stay active and functions well, and vice versa.");
 
         // Ensure required data is collected
         EnsureActivityLevel();
@@ -262,7 +262,7 @@ public class Application
         //   - Calculate target daily calories: TDEE ± daily deficit/surplus
         EnsureActivityLevel();
         EnsureTDEE();
-        Console.WriteLine("\n🧮   Calculating calories deficit and recommend a personalized goal plan .... ");
+        Console.WriteLine("\nCalculating calories deficit and recommend a personalized goal plan .... ");
         Console.ReadKey();
 
         decimal targetDailyCalories = BMIService.CalculateCaloriesDeficit(tdeeResult.TDEE, goalType, goalWeight, userProfile.Weight, weeks);
