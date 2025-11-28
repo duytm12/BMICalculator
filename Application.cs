@@ -3,7 +3,6 @@ using IH = ConsoleApp.Helpers.InputHelpers;
 using ConsoleApp.Enums;
 using ConsoleApp.Models;
 using ConsoleApp.Services;
-using System.Threading.Tasks.Dataflow;
 
 namespace ConsoleApp;
 public class Application
@@ -263,6 +262,7 @@ public class Application
         EnsureActivityLevel();
         EnsureTDEE();
         Console.WriteLine("\nCalculating calories deficit and recommend a personalized goal plan .... ");
+        Console.WriteLine("Please any key to continue...");
         Console.ReadKey();
 
         decimal targetDailyCalories = BMIService.CalculateCaloriesDeficit(tdeeResult.TDEE, goalType, goalWeight, userProfile.Weight, weeks);
@@ -270,17 +270,42 @@ public class Application
         // Display the personalized goal plan
         OH.PrintGoalPlan(goalType, targetDailyCalories, tdeeResult.TDEE, weeks, goalWeight);
 
-        // Step 8: Store goal (optional)
-        // Create a Goal model to store:
-        //   - GoalType (WeightSuggestion enum)
-        //   - CurrentWeight (userProfile.Weight)
-        //   - GoalWeight (goalWeight)
-        //   - Timeline (weeks)
-        //   - WeeklyRate (calculated)
-        //   - TargetDailyCalories (calculated)
-        //   - CreatedDate (DateTime)
-        // Store in Application class as: private Goal? currentGoal = null;
-        // This allows user to view/update goal later
+        // Step 8: Ask if user wants customized plan
+        // int interest = IH.GetCustomizedPlanInterest();
+        
+        // if (interest == 0)
+        // {
+        //     Console.WriteLine("\nThank you for using the BMI Calculator app.");
+        //     return;
+        // }
+
+        // // Step 9: Collect customer information
+        // Console.WriteLine();
+        // Console.WriteLine("To create your personalized plan, we need some information:");
+        // string customerName = IH.GetName();
+        // string customerEmail = IH.GetEmail();
+
+        // // Step 10: Store customer information to database
+        // Customer customer = new Customer
+        // {
+        //     Name = customerName,
+        //     Email = customerEmail,
+        //     CurrentWeight = userProfile.Weight,
+        //     GoalWeight = goalWeight,
+        //     GoalType = goalType,
+        //     TargetDailyCalories = targetDailyCalories,
+        //     CurrentTDEE = tdeeResult.TDEE,
+        //     TimelineWeeks = weeks,
+        //     CreatedDate = DateTime.Now
+        // };
+
+        // CustomerService.StoreCustomerInformation(customer);
+        
+        // Console.WriteLine();
+        // Console.WriteLine("Thank you! Your information has been saved to the database.");
+        // Console.WriteLine("A personalized Activity Plan and Meal Plan will be sent to your email.");
+        // Console.WriteLine("Press any key to continue...");
+        // Console.ReadKey();
     }
 }
 

@@ -298,5 +298,77 @@ public static class InputHelpers
             Console.WriteLine("Invalid input. Please enter 0 or 1.");
         }
     }
+
+    public static int GetCustomizedPlanInterest()
+    {
+        while (true)
+        {
+            Console.WriteLine();
+            Console.WriteLine("Do you want a fully customized Activity Plan and Meal plan based on your preferences?");
+            Console.WriteLine("  1 - Interested");
+            Console.WriteLine("  0 - Not interested");
+            Console.Write("Your choice: ");
+
+            if (int.TryParse(Console.ReadLine(), out int choice) && (choice == 0 || choice == 1))
+            {
+                return choice;
+            }
+
+            Console.WriteLine("Invalid input. Please enter 0 or 1.");
+        }
+    }
+
+    public static string GetName()
+    {
+        while (true)
+        {
+            Console.Write("Enter your name: ");
+            string? input = Console.ReadLine()?.Trim() ?? string.Empty;
+
+            if (input == string.Empty)
+            {
+                Console.WriteLine("Name cannot be empty. Please try again.");
+                continue;
+            }
+
+            if (input.Length > 100)
+            {
+                Console.WriteLine("Name is too long. Please enter a name with less than 100 characters.");
+                continue;
+            }
+
+            return input;
+        }
+    }
+
+    public static string GetEmail()
+    {
+        while (true)
+        {
+            Console.Write("Enter your email address: ");
+            string input = Console.ReadLine()?.Trim() ?? string.Empty;
+
+            if (input == string.Empty)
+            {
+                Console.WriteLine("Email cannot be empty. Please try again.");
+                continue;
+            }
+
+            // Basic email validation
+            if (input.Contains('@') || input.Contains('.'))
+            {
+                Console.WriteLine("Invalid email format. Please enter a valid email address.");
+                continue;
+            }
+
+            if (input.Length > 255)
+            {
+                Console.WriteLine("Email is too long. Please enter a valid email address.");
+                continue;
+            }
+
+            return input;
+        }
+    }
 }
 
